@@ -25,7 +25,8 @@
       "es2015",
       "dom",
       "dom.iterable",
-      "scripthost"
+      "scripthost",
+      "esnext.asynciterable"
     ]
   },
   "include": [
