@@ -6,6 +6,7 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { gitHubGraphQLClient } from '@/modules/github-graphql';
 import gql from 'graphql-tag';
+
 @Component
 export default class PullRequests extends Vue {
   public pullRequests = {};
