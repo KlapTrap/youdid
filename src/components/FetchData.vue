@@ -25,7 +25,6 @@ export default class FetchGithubData extends Vue {
   }
 
   private fetchRepo() {
-    debugger;
     if (this.repo && this.username) {
       this.$store.dispatch(SET_REPO_NAME, this.repo);
       this.$store.dispatch(SET_USERNAME, this.username);

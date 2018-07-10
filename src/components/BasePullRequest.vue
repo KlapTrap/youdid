@@ -9,14 +9,7 @@
         </div>
       </div>
       <div>
-         <el-row :gutter="20">
-          <el-col :span="12"><div>Last Update:</div></el-col>
-          <el-col :span="12"><div>{{ updatedAt }}</div></el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12"><div>Last commenter:</div></el-col>
-          <el-col :span="12"><div>{{ lastCommentor }}</div></el-col>
-        </el-row>
+        <CardBody :rows="cardBodyRows"></CardBody>
       </div>
     </el-card>
 </template>
@@ -30,7 +23,10 @@
 .pr-header {
   align-items: center;
   display: flex;
+  min-height: 80px;
   padding: 0 15px;
+  border-bottom: 1px solid #ebeef5;
+  margin-bottom: 20px;
   &__title {
     a {
       color: #42b983;
@@ -46,7 +42,7 @@
   }
   &__state {
     flex: none;
-    margin-right: 5px;
+    margin: 10px;
   }
 }
 .pr-state-icon {
@@ -63,11 +59,14 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { IPullRequest } from '@/store/modules/pull-requests';
+import CardBody, { ICardBodyRow } from '@/components/CardBody.vue';
 import Octicon from 'vue-octicon/components/Octicon.vue';
+import * as moment from 'moment';
 
 @Component({
   components: {
     Octicon,
+    CardBody,
   },
 })
 export default class BasePullRequest extends Vue {
@@ -78,13 +77,22 @@ export default class BasePullRequest extends Vue {
   };
   @Prop() public pullRequest!: IPullRequest;
 
-  get updatedAt() {
-    return this.pullRequest.node.updatedAt;
-  }
-  get lastCommentor() {
+  get cardBodyRows(): ICardBodyRow[] {
     const comment = this.pullRequest.node.comments.nodes[0];
-    return comment ? comment.author.login : 'None';
+    const commentAuthor = comment ? comment.author.login : 'None';
+    console.log(this.pullRequest);
+    return [
+      {
+        title: 'Last Update',
+        value: moment(this.pullRequest.node.updatedAt).fromNow(),
+      },
+      {
+        title: 'Last commenter',
+        value: commentAuthor,
+      },
+    ];
   }
+
   get url() {
     return this.pullRequest.node.url;
   }

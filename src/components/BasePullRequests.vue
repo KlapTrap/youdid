@@ -4,9 +4,8 @@
       <el-col>
         <BasePullRequest :pullRequest="pullRequest"></BasePullRequest>
       </el-col>
-  </el-row>
+    </el-row>
   </div>
-
 </template>
 <style lang="scss" scoped>
 .grid-content {
