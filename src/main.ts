@@ -5,6 +5,7 @@ import router from './router';
 import store from '@/store';
 import ElementUI from 'element-ui';
 import './registerServiceWorker';
+import 'vue-octicon/icons';
 
 Vue.config.productionTip = false;
 

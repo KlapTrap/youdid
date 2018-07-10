@@ -19,6 +19,7 @@
     "rxjs": "^6.2.1",
     "vue": "^2.5.16",
     "vue-class-component": "^6.0.0",
+    "vue-octicon": "^2.1.1",
     "vue-property-decorator": "^6.0.0",
     "vue-router": "^3.0.1",
     "vue-rx": "^6.0.0",

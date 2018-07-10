@@ -11,35 +11,76 @@ export interface IPullRequests {
 }
 
 export interface IPullRequest {
-  id: string;
-  state: string;
-  updatedAt: string;
-  author: {
-    resourcePath: string;
+  node: {
+    id: string;
+    title: string;
+    state: string;
+    updatedAt: string;
     url: string;
-    avatarUrl: string;
-    login: string;
+    comments: {
+      totalCount: number;
+      nodes: Array<{
+        author: {
+          login: string;
+        };
+      }>;
+    };
+    author: {
+      resourcePath: string;
+      url: string;
+      avatarUrl: string;
+      login: string;
+    };
   };
 }
-
+function getISO(date: Date) {
+  return (
+    date.getUTCFullYear() +
+    '-' +
+    pad(date.getUTCMonth() + 1) +
+    '-' +
+    pad(date.getUTCDate()) +
+    'T' +
+    pad(date.getUTCHours()) +
+    ':' +
+    pad(date.getUTCMinutes()) +
+    ':' +
+    pad(date.getUTCSeconds()) +
+    'Z'
+  );
+}
+function pad(num: number) {
+  if (num < 10) {
+    return '0' + num;
+  }
+  return num;
+}
 class PullRequestModule implements Module<IPullRequests, AppState> {
   public actions: ActionTree<IPullRequests, AppState> = {
-    [FETCH_PULL_REQUESTS]: ({ commit, state }, { repo }: { repo: string }) => {
+    [FETCH_PULL_REQUESTS]: (
+      { commit, state },
+      { repo, time = this.defaultDate }: { repo: string; time: string },
+    ) => {
       gitHubGraphQLClient
         .execute({
           query: gql`
           {
-            search(query:"repo:${repo} updated:>2016-11-16T00:00:00Z", first: 100, type: ISSUE) {
+            search(query:"repo:${repo} is:pr author:KlapTrap updated:>${time}", first: 100, type: ISSUE) {
               edges {
                 node {
                   ... on PullRequest {
+                    title
                     number
                     state
                     updatedAt
-                    author {
-                      resourcePath
-                      url
-                      avatarUrl
+                    url
+                    comments (last: 1) {
+                      totalCount
+                      nodes {
+                        author {
+                        	login
+                      	}
+                      }
                     }
                   }
                 }
@@ -69,6 +110,13 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
     getRepoPullRequests: (state: IPullRequests) => (repo: string) =>
       state[repo],
   };
+
+  private defaultDate = this.getDefaultDate();
+
+  private getDefaultDate() {
+    const today = new Date();
+    return getISO(new Date(today.setDate(today.getDate() - 14)));
+  }
 }
 
 export const pullRequest = new PullRequestModule();

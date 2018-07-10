@@ -1,7 +1,25 @@
 <template>
   <div class="home">
-    <PullRequests></PullRequests>
     <FetchGithubData v-on:repo="setRepo"></FetchGithubData>
+    <el-row :gutter="20">
+      <el-col :s="8" :lg="6">
+        <h2>Recently Updated PRs</h2>
+        <PullRequests></PullRequests>
+        </el-col>
+      <el-col :s="8" :lg="6">
+        <h2>Recently Created PRs</h2>
+        <PullRequests></PullRequests>
+        </el-col>
+      <el-col :s="8" :lg="6">
+        <h2>Recently Created PRs</h2>
+        <PullRequests></PullRequests>
+        </el-col>
+      <el-col :s="8" :lg="6">
+        <h2>Recently Created PRs</h2>
+        <PullRequests></PullRequests>
+        </el-col>
+    </el-row>
+
   </div>
 </template>
 
