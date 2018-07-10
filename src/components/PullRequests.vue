@@ -3,7 +3,7 @@
 </template>
 <style lang="scss" scoped>
 .grid-content {
-  border-radius: 4px;
+  border-radius: 0;
   min-height: 36px;
 }
 </style>

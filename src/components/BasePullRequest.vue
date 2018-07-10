@@ -1,5 +1,5 @@
 <template>
-    <el-card v-once class="grid-content" :body-style="{ padding: '0px' }">
+    <el-card shadow="never" v-once class="grid-content" :body-style="{ padding: '0px' }">
       <div class="pr-header">
         <div class="pr-header__state">
           <octicon :class="iconColor" name="git-pull-request" scale="2" class="pr-state-icon"></octicon>

@@ -21,7 +21,7 @@
     flex: 1;
   }
   .pull-request {
-    margin: 0px;
+    margin: 0 10px;
   }
 }
 </style>
