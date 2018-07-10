@@ -1,11 +1,13 @@
 import { Module, ActionTree } from 'vuex';
 import { gitHubGraphQLClient } from '@/modules/github-graphql';
 import gql from 'graphql-tag';
+import Vue from 'vue';
+import { AppState } from '@/store';
 
 export const FETCH_PULL_REQUESTS = 'pullRequests/fetch';
 
 export interface IPullRequests {
-  [userId: string]: IPullRequest;
+  [repoId: string]: IPullRequest[];
 }
 
 export interface IPullRequest {
@@ -20,8 +22,8 @@ export interface IPullRequest {
   };
 }
 
-class PullRequestModule implements Module<IPullRequests, IPullRequest[]> {
-  public actions: ActionTree<IPullRequests, IPullRequest[]> = {
+class PullRequestModule implements Module<IPullRequests, AppState> {
+  public actions: ActionTree<IPullRequests, AppState> = {
     [FETCH_PULL_REQUESTS]: ({ commit, state }, { repo }: { repo: string }) => {
       gitHubGraphQLClient
         .execute({
@@ -48,7 +50,7 @@ class PullRequestModule implements Module<IPullRequests, IPullRequest[]> {
         .subscribe(response => {
           commit('addPullRequest', {
             repo,
-            pullRequest: response.data ? response.data.search.edges : [],
+            pullRequests: response.data ? response.data.search.edges : [],
           });
         });
     },
@@ -59,10 +61,7 @@ class PullRequestModule implements Module<IPullRequests, IPullRequest[]> {
       state: IPullRequests = {},
       { repo, pullRequests }: { repo: string; pullRequests: IPullRequest },
     ) {
-      state = {
-        ...state,
-        [repo]: pullRequests,
-      };
+      Vue.set(state, repo, pullRequests);
     },
   };
 

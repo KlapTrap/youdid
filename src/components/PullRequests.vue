@@ -1,27 +1,22 @@
 <template>
   <div>
+    <div>{{ repo }}</div>
     <div>{{ pullRequests }}</div>
-    <el-button @click="fetchPullRequests()">Fetch Pull Requests</el-button>
   </div>
 
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
-import { gitHubGraphQLClient } from '@/modules/github-graphql';
-import { AppState } from '../store';
-import { FETCH_PULL_REQUESTS } from '../store/modules/pull-requests';
-import gql from 'graphql-tag';
-import { mapGetters, mapState } from 'vuex';
+import { Component, Prop, Watch } from 'vue-property-decorator';
+import { IPullRequest } from '@/store/modules/pull-requests';
 
 @Component
 export default class PullRequests extends Vue {
-  get pullRequests() {
-    return this.$store.state.pullRequests;
+  get repo() {
+    return this.$store.state.repoDetails.name;
   }
-
-  public fetchPullRequests() {
-    return this.$store.dispatch(FETCH_PULL_REQUESTS, { repo: 'vuejs/vuex' });
+  get pullRequests() {
+    return this.$store.state.pullRequest[this.repo];
   }
 }
 </script>
