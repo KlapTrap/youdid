@@ -24,6 +24,9 @@
     margin: 0 10px;
   }
 }
+.home {
+  width: 100%;
+}
 </style>
 
 <script lang="ts">
