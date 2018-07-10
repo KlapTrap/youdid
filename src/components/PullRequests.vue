@@ -1,32 +1,22 @@
 <template>
-  <div>{{ pullRequests }}</div>
+  <div>
+    <div>{{ repo }}</div>
+    <div>{{ pullRequests }}</div>
+  </div>
+
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
-import { gitHubGraphQLClient } from '@/modules/github-graphql';
-import gql from 'graphql-tag';
+import { Component, Prop, Watch } from 'vue-property-decorator';
+import { IPullRequest } from '@/store/modules/pull-requests';
+
 @Component
 export default class PullRequests extends Vue {
-  public pullRequests = {};
-  constructor() {
-    super();
-    gitHubGraphQLClient
-      .execute({
-        query: gql`
-          query {
-            viewer {
-              login
-            }
-          }
-        `
-      })
-      .subscribe(
-        data =>
-          (this.pullRequests = {
-            ...data.data
-          })
-      );
+  get repo() {
+    return this.$store.state.repoDetails.name;
+  }
+  get pullRequests() {
+    return this.$store.state.pullRequest[this.repo];
   }
 }
 </script>
