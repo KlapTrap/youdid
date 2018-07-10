@@ -59,13 +59,17 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
   public actions: ActionTree<IPullRequests, AppState> = {
     [FETCH_PULL_REQUESTS]: (
       { commit, state },
-      { repo, time = this.defaultDate }: { repo: string; time: string },
+      {
+        repo,
+        username,
+        time = this.defaultDate,
+      }: { repo: string; username: string; time: string },
     ) => {
       gitHubGraphQLClient
         .execute({
           query: gql`
           {
-            search(query:"repo:${repo} is:pr author:KlapTrap updated:>${time}", first: 100, type: ISSUE) {
+            search(query:"repo:${repo} is:pr author:${username} updated:>${time}", first: 100, type: ISSUE) {
               edges {
                 node {
                   ... on PullRequest {
@@ -91,6 +95,7 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
         .subscribe(response => {
           commit('addPullRequest', {
             repo,
+            username,
             pullRequests: response.data ? response.data.search.edges : [],
           });
         });
@@ -98,20 +103,30 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
   };
 
   public mutations = {
-    addPullRequest(
+    addPullRequest: (
       state: IPullRequests = {},
-      { repo, pullRequests }: { repo: string; pullRequests: IPullRequest },
-    ) {
-      Vue.set(state, repo, pullRequests);
+      {
+        repo,
+        username,
+        pullRequests,
+      }: { repo: string; username: string; pullRequests: IPullRequest },
+    ) => {
+      Vue.set(state, this.getRepoKey(repo, username), pullRequests);
     },
   };
 
   public getters = {
-    getRepoPullRequests: (state: IPullRequests) => (repo: string) =>
-      state[repo],
+    getRepoPullRequests: (state: IPullRequests) => (
+      repo: string,
+      username: string,
+    ) => state[this.getRepoKey(repo, username)],
   };
 
   private defaultDate = this.getDefaultDate();
+
+  private getRepoKey(repo: string, username: string) {
+    return `${repo}/${username}`;
+  }
 
   private getDefaultDate() {
     const today = new Date();

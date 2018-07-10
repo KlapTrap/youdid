@@ -5,7 +5,7 @@
           <octicon :class="iconColor" name="git-pull-request" scale="2" class="pr-state-icon"></octicon>
         </div>
         <div class="pr-header__title">
-          <a  :href="url">{{ pullRequest.node.title }}</a>
+          <a :href="url">{{ pullRequest.node.title }}</a>
         </div>
       </div>
       <div>
@@ -32,6 +32,13 @@
   display: flex;
   padding: 0 15px;
   &__title {
+    a {
+      color: #42b983;
+      text-decoration: none;
+      &:visited {
+        color: #42b983;
+      }
+    }
     flex: 1;
     font-size: 18px;
     font-weight: bold;

@@ -1,12 +1,24 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <h1>you<span class="did">did</span></h1>
+    <FetchGithubData></FetchGithubData>
+    <el-container>
+      <router-view/>
+    </el-container>
   </div>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import FetchGithubData from '@/components/FetchData.vue';
+@Component({
+  components: {
+    FetchGithubData,
+  },
+})
+export default class App extends Vue {}
+</script>
+
 
 <style lang="scss">
 #app {
@@ -16,8 +28,12 @@
   text-align: center;
   color: #2c3e50;
 }
+.did {
+  color: #42b983;
+}
 #nav {
   padding: 30px;
+
   a {
     font-weight: bold;
     color: #2c3e50;
