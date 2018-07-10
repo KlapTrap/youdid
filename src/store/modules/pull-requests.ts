@@ -3,6 +3,7 @@ import { gitHubGraphQLClient } from '@/modules/github-graphql';
 import gql from 'graphql-tag';
 import Vue from 'vue';
 import { AppState } from '@/store';
+import { getISO } from '@/modules/helpers';
 
 export const FETCH_PULL_REQUESTS = 'pullRequests/fetch';
 
@@ -25,6 +26,14 @@ export interface IPullRequest {
         };
       }>;
     };
+    labels: {
+      nodes: [
+        {
+          color: string;
+          name: string;
+        }
+      ];
+    };
     author: {
       resourcePath: string;
       url: string;
@@ -33,28 +42,7 @@ export interface IPullRequest {
     };
   };
 }
-function getISO(date: Date) {
-  return (
-    date.getUTCFullYear() +
-    '-' +
-    pad(date.getUTCMonth() + 1) +
-    '-' +
-    pad(date.getUTCDate()) +
-    'T' +
-    pad(date.getUTCHours()) +
-    ':' +
-    pad(date.getUTCMinutes()) +
-    ':' +
-    pad(date.getUTCSeconds()) +
-    'Z'
-  );
-}
-function pad(num: number) {
-  if (num < 10) {
-    return '0' + num;
-  }
-  return num;
-}
+
 class PullRequestModule implements Module<IPullRequests, AppState> {
   public actions: ActionTree<IPullRequests, AppState> = {
     [FETCH_PULL_REQUESTS]: (
@@ -78,6 +66,12 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
                     state
                     updatedAt
                     url
+                    labels(first:100) {
+                      nodes {
+                        color
+                        name
+                      }
+                    }
                     comments (last: 1) {
                       totalCount
                       nodes {

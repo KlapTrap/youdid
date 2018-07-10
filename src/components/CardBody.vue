@@ -2,20 +2,22 @@
   <div class="card-body">
     <div v-for="(row, index) in rows" :key="index" class="card-body-row">
       <div class="card-body-row__title">{{ row.title }}</div>
-      <div class="card-body-row__value">{{ row.value }}</div>
+      <div class="card-body-row__value"><b>{{ row.value }}</b></div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .card-body {
-  display: flex;
+  margin-bottom: 20px;
 }
 .card-body-row {
   display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
   &__title,
   &__value {
-    flex: 1;
+    flex: none;
   }
   &__title {
     font-weight: lighter;
@@ -30,9 +32,11 @@ export interface ICardBodyRow {
   value: string;
 }
 import Vue from 'vue';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Component } from 'vue-property-decorator';
+@Component
 export default class CardBody extends Vue {
-  @Prop() public rows: ICardBodyRow[] = [];
+  @Prop({ default: [] })
+  private rows!: ICardBodyRow[];
 }
 </script>
 

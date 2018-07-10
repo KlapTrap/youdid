@@ -29,7 +29,7 @@ import Octicon from 'vue-octicon/components/Octicon.vue';
   },
 })
 export default class BasePullRequests extends Vue {
-  @Prop() public pullRequests!: IPullRequest[];
+  @Prop() private pullRequests!: IPullRequest[];
 }
 </script>
 
