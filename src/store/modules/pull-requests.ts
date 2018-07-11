@@ -90,6 +90,7 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
           commit('addPullRequest', {
             repo,
             username,
+            dateString,
             pullRequests: response.data ? response.data.search.edges : []
           });
         });
@@ -102,10 +103,16 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
       {
         repo,
         username,
+        dateString,
         pullRequests
-      }: { repo: string; username: string; pullRequests: IPullRequest }
+      }: {
+        repo: string;
+        username: string;
+        dateString: string;
+        pullRequests: IPullRequest;
+      }
     ) => {
-      Vue.set(state, this.getRepoKey(repo, username), pullRequests);
+      Vue.set(state, this.getRepoKey(repo, username, dateString), pullRequests);
     }
   };
 
@@ -115,16 +122,16 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
       getters,
       fullState: AppState
     ) => (repo: string, username: string) => {
-      const pullRequests = state[this.getRepoKey(repo, username)];
+      const selectedDate = moment(fullState.repoDetails.date);
+      const pullRequests =
+        state[this.getRepoKey(repo, username, getISO(selectedDate.toDate()))];
       if (!pullRequests || !fullState.repoDetails) {
         return null;
       }
-      const selectedDate = moment(fullState.repoDetails.date).format(
-        'MM-DD-YYYY'
-      );
+      const selectedDateString = selectedDate.format('MM-DD-YYYY');
       return [...pullRequests].filter(pr => {
         const prDateCreated = moment(pr.node.createdAt).format('MM-DD-YYYY');
-        return prDateCreated < selectedDate;
+        return prDateCreated < selectedDateString;
       });
     },
     getCreatedPullRequests: (state: IPullRequests) => (
@@ -133,7 +140,8 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
       date: string
     ) => {
       const dateSelection = moment(date);
-      const pullRequests = state[this.getRepoKey(repo, username)];
+      const pullRequests =
+        state[this.getRepoKey(repo, username, getISO(dateSelection.toDate()))];
       if (!pullRequests) {
         return null;
       }
@@ -159,8 +167,8 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
 
   private defaultDate = this.getDefaultDate();
 
-  private getRepoKey(repo: string, username: string) {
-    return `${repo}/${username}`;
+  private getRepoKey(repo: string, username: string, date: string) {
+    return `${repo}/${username}:${date}`;
   }
 
   private getDefaultDate() {

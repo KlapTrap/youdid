@@ -4,6 +4,7 @@
       <template slot="prepend">github.com/</template>
     </el-input>
     <el-select v-model="usernameString" filterable placeholder="Users">
+      <template slot="prepend">User</template>
       <el-option
         v-for="user in repoUsers"
         :key="user"
