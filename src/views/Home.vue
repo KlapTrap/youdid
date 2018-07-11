@@ -2,13 +2,13 @@
   <div class="home">
     <el-header>
       <div class="pr-column">
-        <h2>Updated PRs</h2>
         <h2>Created PRs</h2>
+        <h2>Updated PRs</h2>
       </div>
     </el-header>
     <div class="pr-column">
-      <PullRequests class="pull-request"></PullRequests>
       <CreatedPullRequests class="pull-request"></CreatedPullRequests>
+      <PullRequests class="pull-request"></PullRequests>
     </div>
   </div>
 </template>

@@ -18,25 +18,6 @@ export const dateChange = 'date-change';
 
 @Component
 export default class DatePicker extends Vue {
-  private yesterday = moment()
-    .subtract(1, 'days')
-    .toDate();
-
-  private twoWeekesAgo = moment()
-    .subtract(14, 'days')
-    .toDate();
-
-  private date: Date = this.yesterday;
-
-  public mounted() {
-    this.$emit(dateChange, this.date);
-  }
-
-  @Watch('date')
-  private onDateChange(date: Date) {
-    this.$emit(dateChange, date);
-  }
-
   private pickerOptions: DatePickerOptions = {
     disabledDate(time: Date) {
       return time.getTime() > Date.now();
@@ -56,6 +37,25 @@ export default class DatePicker extends Vue {
       }
     ]
   };
+
+  private yesterday = moment()
+    .subtract(1, 'days')
+    .toDate();
+
+  private twoWeekesAgo = moment()
+    .subtract(14, 'days')
+    .toDate();
+
+  private date: Date = this.twoWeekesAgo;
+
+  public mounted() {
+    this.$emit(dateChange, this.date);
+  }
+
+  @Watch('date')
+  private onDateChange(date: Date) {
+    this.$emit(dateChange, date);
+  }
 }
 </script>
 

@@ -110,10 +110,23 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
   };
 
   public getters: GetterTree<IPullRequests, AppState> = {
-    getRepoPullRequests: (state: IPullRequests) => (
-      repo: string,
-      username: string
-    ) => state[this.getRepoKey(repo, username)],
+    getRepoPullRequests: (
+      state: IPullRequests,
+      getters,
+      fullState: AppState
+    ) => (repo: string, username: string) => {
+      const pullRequests = state[this.getRepoKey(repo, username)];
+      if (!pullRequests || !fullState.repoDetails) {
+        return null;
+      }
+      const selectedDate = moment(fullState.repoDetails.date).format(
+        'MM-DD-YYYY'
+      );
+      return [...pullRequests].filter(pr => {
+        const prDateCreated = moment(pr.node.createdAt).format('MM-DD-YYYY');
+        return prDateCreated < selectedDate;
+      });
+    },
     getCreatedPullRequests: (state: IPullRequests) => (
       repo: string,
       username: string,
