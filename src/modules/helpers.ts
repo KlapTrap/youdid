@@ -58,3 +58,7 @@ function pad(num: number) {
   }
   return num;
 }
+
+export function getRepoKey(repo: string, username: string, date: string) {
+  return `${repo}/${username}:${date}`;
+}

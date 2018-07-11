@@ -1,3 +1,4 @@
+import commits, { ICommits } from '@/store/modules/commits';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { pullRequest, IPullRequests } from '@/store/modules/pull-requests';
@@ -10,6 +11,7 @@ export interface AppState {
   pullRequest: IPullRequests;
   repoDetails: IRepoDetails;
   repoUser: IRepoUsers;
+  commits: ICommits;
 }
 
 const debug = process.env.NODE_ENV !== 'production';
@@ -18,6 +20,7 @@ export default new Vuex.Store<AppState>({
     pullRequest,
     repoDetails,
     repoUser,
+    commits
   },
-  strict: debug,
+  strict: debug
 });

@@ -27,6 +27,7 @@ import {
 } from '@/store/modules/repo-info';
 import { FETCH_REPO_USERS } from '@/store/modules/repo-users';
 import DatePicker from '@/components/DatePicker.vue';
+import { FETCH_COMMITS } from '@/store/modules/commits';
 
 @Component({
   components: {
@@ -54,6 +55,11 @@ export default class FetchGithubData extends Vue {
       this.$store.dispatch(SET_DATE, this.date.valueOf());
     }
     if (this.repo && this.username && this.date) {
+      this.$store.dispatch(FETCH_COMMITS, {
+        repo: this.repo,
+        username: this.username,
+        date: this.date
+      });
       this.$store.dispatch(FETCH_PULL_REQUESTS, {
         repo: this.repo,
         username: this.username,

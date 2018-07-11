@@ -21,15 +21,14 @@ class CommitModule implements Module<ICommits, AppState> {
       const dateString = getISO(date);
       gitHubApiClient
         .fetch(`repos/${repo}/commits?author=${username}&since=${dateString}`)
-        .subscribe(commits => {
-          console.log(commits);
+        .subscribe(commits =>
           commit('addCommits', {
             commits,
             dateString,
             username,
             repo
-          });
-        });
+          })
+        );
     }
   };
   public mutations = {

@@ -20,7 +20,9 @@ export default class CommitsList extends Vue {
   get date() {
     return getISO(this.$store.getters.getDate);
   }
+
   get commits() {
+    console.log('here');
     return this.$store.getters.getCommits(this.repo, this.username, this.date);
   }
 }
