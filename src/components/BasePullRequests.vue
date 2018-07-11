@@ -4,9 +4,8 @@
       <el-col>
         <BasePullRequest :pullRequest="pullRequest"></BasePullRequest>
       </el-col>
-  </el-row>
+    </el-row>
   </div>
-
 </template>
 <style lang="scss" scoped>
 .grid-content {
@@ -30,7 +29,7 @@ import Octicon from 'vue-octicon/components/Octicon.vue';
   },
 })
 export default class BasePullRequests extends Vue {
-  @Prop() public pullRequests!: IPullRequest[];
+  @Prop() private pullRequests!: IPullRequest[];
 }
 </script>
 
