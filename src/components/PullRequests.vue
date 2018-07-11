@@ -1,12 +1,6 @@
 <template>
   <BasePullRequests :pullRequests="pullRequests"></BasePullRequests>
 </template>
-<style lang="scss" scoped>
-.grid-content {
-  border-radius: 0;
-  min-height: 36px;
-}
-</style>
 
 <script lang="ts">
 import Vue from 'vue';
