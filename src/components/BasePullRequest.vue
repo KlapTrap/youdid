@@ -2,7 +2,8 @@
     <el-card shadow="never" class="grid-content" :body-style="{ padding: '0px' }">
       <div class="pr-header">
         <div class="pr-header__state">
-          <octicon :class="iconColor" name="git-pull-request" scale="2" class="pr-state-icon"></octicon>
+          <octicon v-if="isMerged" name="git-merge" scale="2" class="pr-state-icon merged"></octicon>
+          <octicon v-else :class="iconColor" name="git-pull-request" scale="2" class="pr-state-icon"></octicon>
         </div>
         <div class="pr-header__title">
           <a :href="url">{{ pullRequest.node.title }}</a>
@@ -66,6 +67,9 @@
   &.closed {
     color: #cb2431;
   }
+  &.merged {
+    color: #6f42c1;
+  }
 }
 </style>
 
@@ -115,10 +119,15 @@ export default class BasePullRequest extends Vue {
   get url() {
     return this.pullRequest.node.url;
   }
+
+  get isMerged() {
+    return this.pullRequest.node.state === this.states.MERGED;
+  }
+
   get iconColor() {
     return {
       open: this.pullRequest.node.state === this.states.OPEN,
-      closed: this.pullRequest.node.state === this.states.MERGED,
+      closed: this.pullRequest.node.state === this.states.CLOSED,
     };
   }
 }

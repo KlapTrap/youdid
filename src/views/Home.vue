@@ -1,13 +1,13 @@
 <template>
   <div class="home">
     <el-header>
-      <div class="header-inner">
+      <div class="pr-column">
         <h2>Recently Updated PRs</h2>
         <h2>Recently Created PRs</h2>
         <h2>Recently Created PRs</h2>
       </div>
     </el-header>
-    <div class="header-inner">
+    <div class="pr-column">
       <PullRequests class="pull-request"></PullRequests>
       <PullRequests class="pull-request"></PullRequests>
       <PullRequests class="pull-request"></PullRequests>
@@ -15,12 +15,13 @@
   </div>
 </template>
 <style lang="scss" scoped>
-.header-inner {
+.pr-column {
   display: flex;
   h2 {
     flex: 1;
   }
   .pull-request {
+    flex: 1;
     margin: 0 10px;
   }
 }
