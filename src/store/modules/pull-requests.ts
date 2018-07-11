@@ -1,8 +1,9 @@
-import { Module, ActionTree } from 'vuex';
+import { Module, ActionTree, GetterTree } from 'vuex';
 import { gitHubGraphQLClient } from '@/modules/github-graphql';
 import gql from 'graphql-tag';
 import Vue from 'vue';
 import { AppState } from '@/store';
+import * as moment from 'moment';
 import { getISO } from '@/modules/helpers';
 
 export const FETCH_PULL_REQUESTS = 'pullRequests/fetch';
@@ -17,6 +18,7 @@ export interface IPullRequest {
     title: string;
     state: string;
     updatedAt: string;
+    createdAt: string;
     url: string;
     comments: {
       totalCount: number;
@@ -47,17 +49,14 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
   public actions: ActionTree<IPullRequests, AppState> = {
     [FETCH_PULL_REQUESTS]: (
       { commit, state },
-      {
-        repo,
-        username,
-        time = this.defaultDate,
-      }: { repo: string; username: string; time: string },
+      { repo, username, date }: { repo: string; username: string; date: Date }
     ) => {
+      const dateString = getISO(date);
       gitHubGraphQLClient
         .execute({
           query: gql`
           {
-            search(query:"repo:${repo} is:pr author:${username} updated:>${time}", first: 100, type: ISSUE) {
+            search(query:"repo:${repo} is:pr author:${username} updated:>${dateString}", first: 100, type: ISSUE) {
               edges {
                 node {
                   ... on PullRequest {
@@ -65,6 +64,7 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
                     number
                     state
                     updatedAt
+                    createdAt
                     url
                     labels(first:100) {
                       nodes {
@@ -84,16 +84,16 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
                 }
               }
             }
-          }`,
+          }`
         })
         .subscribe(response => {
           commit('addPullRequest', {
             repo,
             username,
-            pullRequests: response.data ? response.data.search.edges : [],
+            pullRequests: response.data ? response.data.search.edges : []
           });
         });
-    },
+    }
   };
 
   public mutations = {
@@ -102,18 +102,46 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
       {
         repo,
         username,
-        pullRequests,
-      }: { repo: string; username: string; pullRequests: IPullRequest },
+        pullRequests
+      }: { repo: string; username: string; pullRequests: IPullRequest }
     ) => {
       Vue.set(state, this.getRepoKey(repo, username), pullRequests);
-    },
+    }
   };
 
-  public getters = {
+  public getters: GetterTree<IPullRequests, AppState> = {
     getRepoPullRequests: (state: IPullRequests) => (
       repo: string,
-      username: string,
+      username: string
     ) => state[this.getRepoKey(repo, username)],
+    getCreatedPullRequests: (state: IPullRequests) => (
+      repo: string,
+      username: string,
+      date: string
+    ) => {
+      const dateSelection = moment(date);
+      const pullRequests = state[this.getRepoKey(repo, username)];
+      if (!pullRequests) {
+        return null;
+      }
+      return [...pullRequests]
+        .filter(pr => {
+          const prDate = moment(pr.node.createdAt);
+          return prDate > dateSelection;
+        })
+        .sort((pra, prb) => {
+          const praDate = moment(pra.node.createdAt);
+          const prbDate = moment(prb.node.createdAt);
+          if (praDate < prbDate) {
+            return 1;
+          }
+          if (praDate > prbDate) {
+            return -1;
+          }
+
+          return 0;
+        });
+    }
   };
 
   private defaultDate = this.getDefaultDate();

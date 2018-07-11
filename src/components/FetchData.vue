@@ -20,7 +20,11 @@ import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { FETCH_PULL_REQUESTS } from '../store/modules/pull-requests';
 import { setTimeout } from 'timers';
-import { SET_REPO_NAME, SET_USERNAME } from '@/store/modules/repo-info';
+import {
+  SET_REPO_NAME,
+  SET_USERNAME,
+  SET_DATE
+} from '@/store/modules/repo-info';
 import { FETCH_REPO_USERS } from '@/store/modules/repo-users';
 import DatePicker from '@/components/DatePicker.vue';
 
@@ -46,17 +50,21 @@ export default class FetchGithubData extends Vue {
     if (this.username) {
       this.$store.dispatch(SET_USERNAME, this.username);
     }
-    if (this.repo && this.username) {
+    if (this.date) {
+      this.$store.dispatch(SET_DATE, this.date.valueOf());
+    }
+    if (this.repo && this.username && this.date) {
       this.$store.dispatch(FETCH_PULL_REQUESTS, {
         repo: this.repo,
-        username: this.username
+        username: this.username,
+        date: this.date
       });
     }
   }
 
   private changeDate(date: Date) {
     this.date = date;
-    console.log(date);
+    this.fetchRepo();
   }
 
   get repoUsers() {

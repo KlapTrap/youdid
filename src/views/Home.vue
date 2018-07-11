@@ -2,15 +2,13 @@
   <div class="home">
     <el-header>
       <div class="pr-column">
-        <h2>Recently Updated PRs</h2>
-        <h2>Recently Created PRs</h2>
-        <h2>Recently Created PRs</h2>
+        <h2>Updated PRs</h2>
+        <h2>Created PRs</h2>
       </div>
     </el-header>
     <div class="pr-column">
       <PullRequests class="pull-request"></PullRequests>
-      <PullRequests class="pull-request"></PullRequests>
-      <PullRequests class="pull-request"></PullRequests>
+      <CreatedPullRequests class="pull-request"></CreatedPullRequests>
     </div>
   </div>
 </template>
@@ -33,12 +31,14 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import PullRequests from '@/components/PullRequests.vue';
+import CreatedPullRequests from '@/components/CreatedPullRequests.vue';
 import { SET_REPO_NAME } from '@/store/modules/repo-info';
 
 @Component({
   components: {
     PullRequests,
-  },
+    CreatedPullRequests
+  }
 })
 export default class Home extends Vue {}
 </script>

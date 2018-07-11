@@ -85,14 +85,14 @@ import * as moment from 'moment';
 @Component({
   components: {
     Octicon,
-    CardBody,
-  },
+    CardBody
+  }
 })
 export default class BasePullRequest extends Vue {
   public states = {
     MERGED: 'MERGED',
     CLOSED: 'CLOSED',
-    OPEN: 'OPEN',
+    OPEN: 'OPEN'
   };
   @Prop() private pullRequest!: IPullRequest;
 
@@ -106,12 +106,16 @@ export default class BasePullRequest extends Vue {
     const rows = [
       {
         title: 'Last Update',
-        value: moment(this.pullRequest.node.updatedAt).fromNow(),
+        value: moment(this.pullRequest.node.updatedAt).fromNow()
+      },
+      {
+        title: 'Created',
+        value: moment(this.pullRequest.node.createdAt).fromNow()
       },
       {
         title: 'Last commenter',
-        value: commentAuthor,
-      },
+        value: commentAuthor
+      }
     ];
     return rows;
   }
@@ -127,7 +131,7 @@ export default class BasePullRequest extends Vue {
   get iconColor() {
     return {
       open: this.pullRequest.node.state === this.states.OPEN,
-      closed: this.pullRequest.node.state === this.states.CLOSED,
+      closed: this.pullRequest.node.state === this.states.CLOSED
     };
   }
 }
