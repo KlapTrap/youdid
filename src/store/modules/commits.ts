@@ -6,10 +6,75 @@ import Vue from 'vue';
 
 export const FETCH_COMMITS = 'commits/fetch';
 
-export interface ICommit {}
+export interface IRootCommit {
+  sha: string;
+  node_id: string;
+  commit: ICommit;
+  url: string;
+  html_url: string;
+  comments_url: string;
+  author: ICommitAuthor;
+  committer: ICommitAuthor;
+  parents: IParent[];
+}
+
+export interface IParent {
+  sha: string;
+  url: string;
+  html_url: string;
+}
+
+export interface ICommitAuthor {
+  login: string;
+  id: number;
+  node_id: string;
+  avatar_url: string;
+  gravatar_id: string;
+  url: string;
+  html_url: string;
+  followers_url: string;
+  following_url: string;
+  gists_url: string;
+  starred_url: string;
+  subscriptions_url: string;
+  organizations_url: string;
+  repos_url: string;
+  events_url: string;
+  received_events_url: string;
+  type: string;
+  site_admin: boolean;
+}
+
+export interface ICommit {
+  author: IAuthor;
+  committer: IAuthor;
+  message: string;
+  tree: ITree;
+  url: string;
+  comment_count: number;
+  verification: IVerification;
+}
+
+export interface IVerification {
+  verified: boolean;
+  reason: string;
+  signature: string;
+  payload: string;
+}
+
+export interface ITree {
+  sha: string;
+  url: string;
+}
+
+export interface IAuthor {
+  name: string;
+  email: string;
+  date: string;
+}
 
 export interface ICommits {
-  [key: string]: ICommit[];
+  [key: string]: IRootCommit[];
 }
 
 class CommitModule implements Module<ICommits, AppState> {
@@ -43,7 +108,7 @@ class CommitModule implements Module<ICommits, AppState> {
         repo: string;
         username: string;
         dateString: string;
-        commits: ICommits;
+        commits: IRootCommit[];
       }
     ) => {
       Vue.set(state, getRepoKey(repo, username, dateString), commits);

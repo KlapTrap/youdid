@@ -8,9 +8,6 @@
 </template>
 
 <style lang="scss" scoped>
-.card-body {
-  margin-bottom: 20px;
-}
 .card-body-row {
   display: flex;
   justify-content: space-between;

@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="pr-body">
-        <CardBody :rows="cardBodyRows"></CardBody>
+        <CardBody class="card-body" :rows="cardBodyRows"></CardBody>
         <div class="pr-tags">
           <el-tag class="pr-tag" :style="{ color: getCorrectTextColor(label.color) }" v-for="label in pullRequest.node.labels.nodes" :key="label.name" :color="getColor(label.color)">{{label.name}}</el-tag>
         </div>
@@ -19,6 +19,9 @@
 </template>
 
 <style lang="scss" scoped>
+.card-body {
+  margin-bottom: 20px;
+}
 .pr-body {
   padding: 20px;
 }
