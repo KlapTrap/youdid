@@ -42,6 +42,9 @@ import { SET_REPO_NAME } from '@/store/modules/repo-info';
   },
 })
 export default class Home extends Vue {
+  private mounted() {
+    this.fetchRepo();
+  }
   @Watch('watchableRepoD33ts')
   private fetchRepo() {
     if (this.repo && this.username && this.date) {

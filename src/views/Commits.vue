@@ -14,13 +14,43 @@
 
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import CommitsList from '@/components/CommitsList.vue';
+import { FETCH_COMMITS } from '@/store/modules/commits';
 
 @Component({
   components: {
-    CommitsList
-  }
+    CommitsList,
+  },
 })
-export default class Commits extends Vue {}
+export default class Commits extends Vue {
+  private mounted() {
+    this.fetchCommits();
+  }
+
+  @Watch('watchableRepoD33ts')
+  private fetchCommits() {
+    if (this.repo && this.username && this.date) {
+      this.$store.dispatch(FETCH_COMMITS, {
+        repo: this.repo,
+        username: this.username,
+        date: this.date,
+      });
+    }
+  }
+
+  get watchableRepoD33ts() {
+    return this.repo, this.username, this.date, Date.now();
+  }
+
+  get repo() {
+    return this.$store.getters.getRepoName;
+  }
+  get username() {
+    return this.$store.getters.getUsername;
+  }
+  get date() {
+    return this.$store.getters.getDate;
+  }
+}
 </script>
