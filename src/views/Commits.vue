@@ -1,8 +1,11 @@
 <template>
   <div class="commit-list">
-    <el-input v-model="branch" placeholder="Default branch">
+    <div>
+    <el-input v-model="_branch" placeholder="Default branch">
       <template slot="prepend">Branch</template>
     </el-input>
+     <el-button v-on:click="setBranch()" type="primary">Primary</el-button>
+    </div>
     <h1>Commits</h1>
     <CommitsList></CommitsList>
   </div>
@@ -17,7 +20,7 @@
 
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
 import CommitsList from '@/components/CommitsList.vue';
 import { FETCH_COMMITS } from '@/store/modules/commits';
 import { SET_BRANCH } from '@/store/modules/repo-info';
@@ -28,8 +31,16 @@ import { SET_BRANCH } from '@/store/modules/repo-info';
   },
 })
 export default class Commits extends Vue {
+  //FIX: https://github.com/vuejs/vue-class-component/blob/master/README.md
+  _branch = '';
+
   private mounted() {
+    this._branch = this.$store.getters.getBranch;
     this.fetchCommits();
+  }
+
+  private setBranch() {
+    this.$store.dispatch(SET_BRANCH, this._branch);
   }
 
   @Watch('watchableRepoD33ts')
@@ -57,13 +68,8 @@ export default class Commits extends Vue {
   get date() {
     return this.$store.getters.getDate;
   }
-
   get branch() {
     return this.$store.getters.getBranch;
-  }
-
-  set branch(branch: string) {
-    this.$store.dispatch(SET_BRANCH, branch);
   }
 }
 </script>

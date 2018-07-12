@@ -2,8 +2,10 @@
   <div id="app">
     <h1>you<span class="did">did</span></h1>
     <FetchGithubData></FetchGithubData>
-    <router-link to="/">PRs</router-link> |
-    <router-link to="/commits">Commits</router-link>
+    <div class="nav">
+      <router-link class="nav-item" to="/">PRs</router-link>
+      <router-link class="nav-item" to="/commits">Commits</router-link>
+    </div>
     <el-container>
       <router-view/>
     </el-container>
@@ -33,14 +35,34 @@ export default class App extends Vue {}
 .did {
   color: #42b983;
 }
-#nav {
-  padding: 30px;
-
-  a {
+.nav {
+  padding: 20px;
+  .nav-item + .nav-item {
+    margin-left: -1px;
+  }
+  .nav-item {
+    position: relative;
+    z-index: 1;
+    border: 1px solid #e1e4e8;
+    padding: 10px 10px;
     font-weight: bold;
     color: #2c3e50;
+    text-decoration: none;
+
+    &:first-child {
+      border-top-left-radius: 3px;
+      border-bottom-left-radius: 3px;
+    }
+    &:last-child {
+      border-top-right-radius: 3px;
+      border-bottom-right-radius: 3px;
+    }
+
     &.router-link-exact-active {
-      color: #42b983;
+      z-index: 2;
+      background-color: #42b983;
+      border-color: #42b983;
+      color: white;
     }
   }
 }
