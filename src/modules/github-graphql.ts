@@ -7,8 +7,8 @@ class GitHubGraphQLClient {
   private link = new HttpLink({
     uri: this.uri,
     headers: {
-      Authorization: `bearer ${this.token}`
-    }
+      Authorization: `bearer ${this.token}`,
+    },
   });
   public execute(operation: GraphQLRequest) {
     return execute(this.link, operation);

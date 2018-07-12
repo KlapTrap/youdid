@@ -38,11 +38,12 @@ class RepoUsersModule implements Module<IRepoUsers, AppState> {
           .subscribe(response => {
             commit('addUsers', {
               repo: getRepoFromOwnerName(owner, name),
-              collaborators: response.data
-                ? response.data.repository.assignableUsers.nodes.map(
-                    (nodes: UserNodes) => nodes.login,
-                  )
-                : [],
+              collaborators:
+                response.data && response.data.repository
+                  ? response.data.repository.assignableUsers.nodes.map(
+                      (nodes: UserNodes) => nodes.login,
+                    )
+                  : [],
             });
           });
       }

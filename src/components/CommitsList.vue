@@ -18,8 +18,8 @@ import Commit from '@/components/Commit.vue';
 import { Component } from 'vue-property-decorator';
 @Component({
   components: {
-    Commit
-  }
+    Commit,
+  },
 })
 export default class CommitsList extends Vue {
   get repo() {
@@ -29,13 +29,21 @@ export default class CommitsList extends Vue {
     return this.$store.state.repoDetails.username;
   }
 
+  get branch() {
+    return this.$store.state.repoDetails.branch;
+  }
+
   get date() {
     return getISO(this.$store.getters.getDate);
   }
 
   get commits() {
-    console.log('here');
-    return this.$store.getters.getCommits(this.repo, this.username, this.date);
+    return this.$store.getters.getCommits(
+      this.repo,
+      this.username,
+      this.date,
+      this.branch,
+    );
   }
 }
 </script>

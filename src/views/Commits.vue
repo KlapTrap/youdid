@@ -1,5 +1,8 @@
 <template>
   <div class="commit-list">
+    <el-input v-model="branch" placeholder="Default branch">
+      <template slot="prepend">Branch</template>
+    </el-input>
     <h1>Commits</h1>
     <CommitsList></CommitsList>
   </div>
@@ -17,6 +20,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import CommitsList from '@/components/CommitsList.vue';
 import { FETCH_COMMITS } from '@/store/modules/commits';
+import { SET_BRANCH } from '@/store/modules/repo-info';
 
 @Component({
   components: {
@@ -35,12 +39,13 @@ export default class Commits extends Vue {
         repo: this.repo,
         username: this.username,
         date: this.date,
+        branch: this.branch,
       });
     }
   }
 
   get watchableRepoD33ts() {
-    return this.repo, this.username, this.date, Date.now();
+    return this.repo, this.username, this.date, this.branch, Date.now();
   }
 
   get repo() {
@@ -51,6 +56,14 @@ export default class Commits extends Vue {
   }
   get date() {
     return this.$store.getters.getDate;
+  }
+
+  get branch() {
+    return this.$store.getters.getBranch;
+  }
+
+  set branch(branch: string) {
+    this.$store.dispatch(SET_BRANCH, branch);
   }
 }
 </script>

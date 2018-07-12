@@ -87,12 +87,14 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
           }`,
         })
         .subscribe(response => {
-          console.log(repo, username, dateString);
           commit('addPullRequest', {
             repo,
             username,
             dateString,
-            pullRequests: response.data ? response.data.search.edges : [],
+            pullRequests:
+              response.data && response.data.search
+                ? response.data.search.edges
+                : [],
           });
         });
     },

@@ -80,21 +80,31 @@ export interface ICommits {
 class CommitModule implements Module<ICommits, AppState> {
   public actions: ActionTree<ICommits, AppState> = {
     [FETCH_COMMITS]: (
-      { commit, state },
-      { repo, username, date }: { repo: string; username: string; date: Date }
+      { commit },
+      {
+        repo = '',
+        username = '',
+        date,
+        branch = '',
+      }: { repo: string; username: string; date: Date; branch: string },
     ) => {
       const dateString = getISO(date);
       gitHubApiClient
-        .fetch(`repos/${repo}/commits?author=${username}&since=${dateString}`)
+        .fetch(
+          `repos/${repo}/commits?author=${username}&since=${dateString}${
+            branch ? '&sha=' + branch : ''
+          }`,
+        )
         .subscribe(commits =>
           commit('addCommits', {
             commits,
             dateString,
             username,
-            repo
-          })
+            repo,
+            branch,
+          }),
         );
-    }
+    },
   };
   public mutations = {
     addCommits: (
@@ -103,26 +113,29 @@ class CommitModule implements Module<ICommits, AppState> {
         repo,
         username,
         dateString,
-        commits
+        commits,
+        branch,
       }: {
         repo: string;
         username: string;
         dateString: string;
         commits: IRootCommit[];
-      }
+        branch: string;
+      },
     ) => {
-      Vue.set(state, getRepoKey(repo, username, dateString), commits);
-    }
+      Vue.set(state, getRepoKey(repo + branch, username, dateString), commits);
+    },
   };
 
   public getters = {
     getCommits: (state: ICommits) => (
       repo: string,
       username: string,
-      date: string
+      date: string,
+      branch: string = '',
     ) => {
-      return state[getRepoKey(repo, username, date)];
-    }
+      return state[getRepoKey(repo + branch, username, date)];
+    },
   };
 }
 const commitsModule = new CommitModule();
