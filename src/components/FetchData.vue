@@ -23,7 +23,7 @@ import { setTimeout } from 'timers';
 import {
   SET_REPO_NAME,
   SET_USERNAME,
-  SET_DATE
+  SET_DATE,
 } from '@/store/modules/repo-info';
 import { FETCH_REPO_USERS } from '@/store/modules/repo-users';
 import DatePicker from '@/components/DatePicker.vue';
@@ -31,8 +31,8 @@ import { FETCH_COMMITS } from '@/store/modules/commits';
 
 @Component({
   components: {
-    DatePicker
-  }
+    DatePicker,
+  },
 })
 export default class FetchGithubData extends Vue {
   public repo = 'cloudfoundry-incubator/stratos';
@@ -40,11 +40,11 @@ export default class FetchGithubData extends Vue {
   public date!: Date;
 
   public mounted() {
-    this.fetchRepo();
+    this.commitRepoDetails();
     this.$store.dispatch(FETCH_REPO_USERS);
   }
 
-  private fetchRepo() {
+  private commitRepoDetails() {
     if (this.username) {
       this.$store.dispatch(SET_REPO_NAME, this.repo);
     }
@@ -52,25 +52,13 @@ export default class FetchGithubData extends Vue {
       this.$store.dispatch(SET_USERNAME, this.username);
     }
     if (this.date) {
-      this.$store.dispatch(SET_DATE, this.date.valueOf());
-    }
-    if (this.repo && this.username && this.date) {
-      this.$store.dispatch(FETCH_COMMITS, {
-        repo: this.repo,
-        username: this.username,
-        date: this.date
-      });
-      this.$store.dispatch(FETCH_PULL_REQUESTS, {
-        repo: this.repo,
-        username: this.username,
-        date: this.date
-      });
+      this.$store.dispatch(SET_DATE, this.date);
     }
   }
 
   private changeDate(date: Date) {
     this.date = date;
-    this.fetchRepo();
+    this.commitRepoDetails();
   }
 
   get repoUsers() {
@@ -83,7 +71,7 @@ export default class FetchGithubData extends Vue {
 
   set repoString(repo: string) {
     this.repo = repo;
-    this.fetchRepo();
+    this.commitRepoDetails();
     this.$store.dispatch(FETCH_REPO_USERS);
   }
 
@@ -92,7 +80,7 @@ export default class FetchGithubData extends Vue {
   }
   set usernameString(username: string) {
     this.username = username;
-    this.fetchRepo();
+    this.commitRepoDetails();
   }
 }
 </script>

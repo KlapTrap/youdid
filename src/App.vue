@@ -2,6 +2,8 @@
   <div id="app">
     <h1>you<span class="did">did</span></h1>
     <FetchGithubData></FetchGithubData>
+    <router-link to="/">PRs</router-link> |
+    <router-link to="/commits">Commits</router-link>
     <el-container>
       <router-view/>
     </el-container>

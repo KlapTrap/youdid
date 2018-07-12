@@ -10,8 +10,8 @@ import BasePullRequests from '@/components/BasePullRequests.vue';
 
 @Component({
   components: {
-    BasePullRequests
-  }
+    BasePullRequests,
+  },
 })
 export default class CreatedPullRequests extends Vue {
   get repo() {
@@ -24,11 +24,7 @@ export default class CreatedPullRequests extends Vue {
     return this.$store.state.repoDetails.date;
   }
   get pullRequests() {
-    return this.$store.getters.getCreatedPullRequests(
-      this.repo,
-      this.username,
-      this.date
-    );
+    return this.$store.getters.getCreatedPullRequests;
   }
 }
 </script>

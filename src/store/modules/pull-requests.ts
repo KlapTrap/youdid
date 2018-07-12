@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import Vue from 'vue';
 import { AppState } from '@/store';
 import * as moment from 'moment';
-import { getISO } from '@/modules/helpers';
+import { getISO, getRepoKey } from '@/modules/helpers';
 
 export const FETCH_PULL_REQUESTS = 'pullRequests/fetch';
 
@@ -49,9 +49,9 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
   public actions: ActionTree<IPullRequests, AppState> = {
     [FETCH_PULL_REQUESTS]: (
       { commit, state },
-      { repo, username, date }: { repo: string; username: string; date: Date }
+      { repo, username, date }: { repo: string; username: string; date: Date },
     ) => {
-      const dateString = getISO(date);
+      const dateString = getISO(date as Date);
       gitHubGraphQLClient
         .execute({
           query: gql`
@@ -84,16 +84,18 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
                 }
               }
             }
-          }`
+          }`,
         })
         .subscribe(response => {
+          console.log(repo, username, dateString);
           commit('addPullRequest', {
             repo,
             username,
-            pullRequests: response.data ? response.data.search.edges : []
+            dateString,
+            pullRequests: response.data ? response.data.search.edges : [],
           });
         });
-    }
+    },
   };
 
   public mutations = {
@@ -102,38 +104,46 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
       {
         repo,
         username,
-        pullRequests
-      }: { repo: string; username: string; pullRequests: IPullRequest }
+        dateString,
+        pullRequests,
+      }: {
+        repo: string;
+        username: string;
+        dateString: string;
+        pullRequests: IPullRequest;
+      },
     ) => {
-      Vue.set(state, this.getRepoKey(repo, username), pullRequests);
-    }
+      Vue.set(state, getRepoKey(repo, username, dateString), pullRequests);
+    },
   };
 
   public getters: GetterTree<IPullRequests, AppState> = {
     getRepoPullRequests: (
       state: IPullRequests,
       getters,
-      fullState: AppState
-    ) => (repo: string, username: string) => {
-      const pullRequests = state[this.getRepoKey(repo, username)];
-      if (!pullRequests || !fullState.repoDetails) {
+      fullState: AppState,
+    ) => {
+      const { date, name, username } = fullState.repoDetails;
+      const pullRequests = state[getRepoKey(name, username, date)];
+      if (!pullRequests) {
         return null;
       }
       const selectedDate = moment(fullState.repoDetails.date).format(
-        'MM-DD-YYYY'
+        'MM-DD-YYYY',
       );
       return [...pullRequests].filter(pr => {
         const prDateCreated = moment(pr.node.createdAt).format('MM-DD-YYYY');
         return prDateCreated < selectedDate;
       });
     },
-    getCreatedPullRequests: (state: IPullRequests) => (
-      repo: string,
-      username: string,
-      date: string
+    getCreatedPullRequests: (
+      state: IPullRequests,
+      getters,
+      allState: AppState,
     ) => {
+      const { date, name, username } = allState.repoDetails;
       const dateSelection = moment(date);
-      const pullRequests = state[this.getRepoKey(repo, username)];
+      const pullRequests = state[getRepoKey(name, username, date)];
       if (!pullRequests) {
         return null;
       }
@@ -154,19 +164,8 @@ class PullRequestModule implements Module<IPullRequests, AppState> {
 
           return 0;
         });
-    }
+    },
   };
-
-  private defaultDate = this.getDefaultDate();
-
-  private getRepoKey(repo: string, username: string) {
-    return `${repo}/${username}`;
-  }
-
-  private getDefaultDate() {
-    const today = new Date();
-    return getISO(new Date(today.setDate(today.getDate() - 14)));
-  }
 }
 
 export const pullRequest = new PullRequestModule();

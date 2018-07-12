@@ -20,7 +20,7 @@ export default new Vuex.Store<AppState>({
     pullRequest,
     repoDetails,
     repoUser,
-    commits
+    commits,
   },
-  strict: debug
+  strict: debug,
 });
