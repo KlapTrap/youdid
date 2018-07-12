@@ -6,7 +6,7 @@
           <octicon v-else :class="iconColor" name="git-pull-request" scale="2" class="pr-state-icon"></octicon>
         </div>
         <div class="pr-header__title">
-          <a :href="url">{{ pullRequest.node.title }}</a>
+          <a :href="url" target="_blank" >{{ pullRequest.node.title }}</a>
         </div>
       </div>
       <div class="pr-body">
@@ -88,14 +88,14 @@ import * as moment from 'moment';
 @Component({
   components: {
     Octicon,
-    CardBody
-  }
+    CardBody,
+  },
 })
 export default class BasePullRequest extends Vue {
   public states = {
     MERGED: 'MERGED',
     CLOSED: 'CLOSED',
-    OPEN: 'OPEN'
+    OPEN: 'OPEN',
   };
   @Prop() private pullRequest!: IPullRequest;
 
@@ -109,16 +109,16 @@ export default class BasePullRequest extends Vue {
     const rows = [
       {
         title: 'Last Update',
-        value: moment(this.pullRequest.node.updatedAt).fromNow()
+        value: moment(this.pullRequest.node.updatedAt).fromNow(),
       },
       {
         title: 'Created',
-        value: moment(this.pullRequest.node.createdAt).fromNow()
+        value: moment(this.pullRequest.node.createdAt).fromNow(),
       },
       {
         title: 'Last commenter',
-        value: commentAuthor
-      }
+        value: commentAuthor,
+      },
     ];
     return rows;
   }
@@ -134,7 +134,7 @@ export default class BasePullRequest extends Vue {
   get iconColor() {
     return {
       open: this.pullRequest.node.state === this.states.OPEN,
-      closed: this.pullRequest.node.state === this.states.CLOSED
+      closed: this.pullRequest.node.state === this.states.CLOSED,
     };
   }
 }

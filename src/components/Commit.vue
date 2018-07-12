@@ -1,6 +1,6 @@
 <template>
   <el-card class="commit" shadow="never">
-    <a slot="header" :href="commit.html_url" class="commit-header">{{commit.commit.message}}</a>
+    <a slot="header" :href="commit.html_url" class="commit-header" target="_blank">{{commit.commit.message}}</a>
     <CardBody :rows="cardBodyRows" ></CardBody>
   </el-card>
 </template>
@@ -34,8 +34,8 @@ import CardBody, { ICardBodyRow } from '@/components/CardBody.vue';
 import * as moment from 'moment';
 @Component({
   components: {
-    CardBody
-  }
+    CardBody,
+  },
 })
 export default class Commit extends Vue {
   @Prop() private commit!: IRootCommit;
@@ -44,12 +44,12 @@ export default class Commit extends Vue {
     const rows = [
       {
         title: 'Committer',
-        value: this.commit.commit.committer.name
+        value: this.commit.commit.committer.name,
       },
       {
         title: 'Committed',
-        value: moment(this.commit.commit.author.date).fromNow()
-      }
+        value: moment(this.commit.commit.author.date).fromNow(),
+      },
     ];
     return rows;
   }
