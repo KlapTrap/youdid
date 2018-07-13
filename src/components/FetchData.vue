@@ -108,12 +108,24 @@ export default class FetchGithubData extends Vue {
 }
 .repo-inputs {
   display: flex;
+  @media only screen and (max-width: 800px) {
+    & {
+      flex-direction: column;
+    }
+  }
 }
 .user-select,
 .date-select,
 .repo-select,
 .submit-button {
-  margin: 0 10px;
+  @media only screen and (min-width: 800px) {
+    & {
+      margin: 0 10px;
+      width: auto;
+    }
+  }
+  width: 100%;
+  margin: 10px 0px;
 }
 </style>
 

@@ -1,26 +1,36 @@
 <template>
   <div class="home">
-    <el-header>
-      <div class="pr-column">
-        <h2>Created PRs</h2>
-        <h2>Updated PRs</h2>
-      </div>
-    </el-header>
     <div class="pr-column">
-      <CreatedPullRequests class="pull-request"></CreatedPullRequests>
-      <PullRequests class="pull-request"></PullRequests>
+      <div class="pull-request">
+        <h2>Created PRs</h2>
+        <CreatedPullRequests ></CreatedPullRequests>
+      </div>
+      <div class="pull-request">
+        <h2>Updated PRs</h2>
+        <PullRequests ></PullRequests>
+      </div>
     </div>
   </div>
 </template>
 <style lang="scss" scoped>
 .pr-column {
   display: flex;
+  @media only screen and (max-width: 800px) {
+    & {
+      flex-direction: column;
+    }
+  }
   h2 {
     flex: 1;
   }
   .pull-request {
     flex: 1;
     margin: 0 10px;
+    @media only screen and (max-width: 800px) {
+      & {
+        margin: 0;
+      }
+    }
   }
 }
 .home {

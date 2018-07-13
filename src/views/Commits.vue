@@ -13,13 +13,29 @@
 
 <style lang="scss" scoped>
 .commit-list {
-  margin: auto;
-  width: 70%;
+  width: 100%;
+  margin: 0;
+  @media only screen and (min-width: 800px) {
+    & {
+      margin: auto;
+      width: 70%;
+    }
+  }
 }
 .branch-selector {
   display: flex;
+  @media only screen and (max-width: 800px) {
+    & {
+      flex-direction: column;
+    }
+  }
   &__button {
     margin-left: 20px;
+    @media only screen and (max-width: 800px) {
+      & {
+        margin: 10px 0;
+      }
+    }
   }
 }
 </style>
