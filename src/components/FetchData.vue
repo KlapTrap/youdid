@@ -1,9 +1,9 @@
 <template>
   <div class="repo-inputs">
-    <el-input v-model="repoString">
+    <el-input class="repo-select" v-model="repoString">
       <template slot="prepend">github.com/</template>
     </el-input>
-    <el-select v-model="usernameString" filterable placeholder="Users">
+    <el-select class="user-select" v-model="usernameString" filterable placeholder="Users">
       <el-option
         v-for="user in repoUsers"
         :key="user"
@@ -11,13 +11,14 @@
         :value="user">
       </el-option>
     </el-select>
-    <DatePicker v-on:date-change="changeDate"></DatePicker>
+    <DatePicker class="date-select" v-on:date-change="changeDate"></DatePicker>
+    <el-button class="submit-button" v-on:click="commitRepoDetails()" type="primary">Set Repo Details</el-button>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 import { FETCH_PULL_REQUESTS } from '../store/modules/pull-requests';
 import { setTimeout } from 'timers';
 import {
@@ -28,6 +29,7 @@ import {
 import { FETCH_REPO_USERS } from '@/store/modules/repo-users';
 import DatePicker from '@/components/DatePicker.vue';
 import { FETCH_COMMITS } from '@/store/modules/commits';
+import * as moment from 'moment';
 
 @Component({
   components: {
@@ -35,17 +37,31 @@ import { FETCH_COMMITS } from '@/store/modules/commits';
   },
 })
 export default class FetchGithubData extends Vue {
-  public repo = 'cloudfoundry-incubator/stratos';
-  public username = 'klaptrap';
+  public repo: string = this.$store.getters.getRepoName || '';
+  public username: string = this.$store.getters.getUsername || '';
   public date!: Date;
+  public timeout!: number;
 
   public mounted() {
-    this.commitRepoDetails();
-    this.$store.dispatch(FETCH_REPO_USERS);
+    // this.commitRepoDetails();
+    this.fetchRepoUsers(null, true);
+  }
+
+  public fetchRepoUsers(repoName: string | null, retainUser?: boolean) {
+    const main = this;
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
+    this.timeout = window.setTimeout(() => {
+      main.$store.dispatch(FETCH_REPO_USERS, repoName);
+      if (retainUser !== true) {
+        main.username = '';
+      }
+    }, 250);
   }
 
   private commitRepoDetails() {
-    if (this.username) {
+    if (this.repo) {
       this.$store.dispatch(SET_REPO_NAME, this.repo);
     }
     if (this.username) {
@@ -58,11 +74,10 @@ export default class FetchGithubData extends Vue {
 
   private changeDate(date: Date) {
     this.date = date;
-    this.commitRepoDetails();
   }
 
   get repoUsers() {
-    return this.$store.getters.getRepoUsers(this.repo);
+    return this.$store.getters.getRepoUsers(this.repoString);
   }
 
   get repoString() {
@@ -71,8 +86,7 @@ export default class FetchGithubData extends Vue {
 
   set repoString(repo: string) {
     this.repo = repo;
-    this.commitRepoDetails();
-    this.$store.dispatch(FETCH_REPO_USERS);
+    this.fetchRepoUsers(repo);
   }
 
   get usernameString() {
@@ -80,18 +94,26 @@ export default class FetchGithubData extends Vue {
   }
   set usernameString(username: string) {
     this.username = username;
-    this.commitRepoDetails();
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.repo-select {
+  flex: 2;
+}
+.user-select,
+.date-select {
+  flex: 1;
+}
 .repo-inputs {
   display: flex;
 }
-.el-input,
-.el-select {
-  margin: 0 20px;
+.user-select,
+.date-select,
+.repo-select,
+.submit-button {
+  margin: 0 10px;
 }
 </style>
 

@@ -3,7 +3,7 @@
     <h1>you<span class="did">did</span></h1>
     <FetchGithubData></FetchGithubData>
     <div class="nav">
-      <router-link class="nav-item" to="/">PRs</router-link>
+      <router-link class="nav-item" to="/prs">PRs</router-link>
       <router-link class="nav-item" to="/commits">Commits</router-link>
     </div>
     <el-container>
@@ -13,14 +13,71 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import FetchGithubData from '@/components/FetchData.vue';
+import {
+  SET_REPO_NAME,
+  SET_USERNAME,
+  SET_DATE,
+  SET_BRANCH,
+} from '@/store/modules/repo-info';
+import * as moment from 'moment';
 @Component({
   components: {
     FetchGithubData,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  private created() {
+    this.commitRepoDetails();
+  }
+  private commitRepoDetails() {
+    const { repo, username, date, branch } = this.$route.query;
+    if (repo) {
+      this.$store.dispatch(SET_REPO_NAME, repo);
+    }
+    if (username) {
+      this.$store.dispatch(SET_USERNAME, username);
+    }
+    if (date) {
+      this.$store.dispatch(SET_DATE, moment(date).toDate());
+    }
+    if (branch) {
+      this.$store.dispatch(SET_BRANCH, branch);
+    }
+  }
+
+  @Watch('watchableRepoD33ts')
+  private setUrlParam() {
+    const data = {
+      ...this.$route.query,
+      ...{
+        repo: this.repo,
+        username: this.username,
+        date: this.date,
+        branch: this.branch,
+      },
+    };
+    this.$router.push({ name: this.$router.currentRoute.name, query: data });
+  }
+
+  get watchableRepoD33ts() {
+    return [this.repo, this.username, this.date, this.branch].join();
+  }
+
+  get repo() {
+    return this.$store.getters.getRepoName;
+  }
+  get username() {
+    return this.$store.getters.getUsername;
+  }
+  get date() {
+    return this.$store.state.repoDetails.date;
+  }
+  get branch() {
+    return this.$store.getters.getBranch;
+  }
+}
 </script>
 
 
@@ -58,7 +115,7 @@ export default class App extends Vue {}
       border-bottom-right-radius: 3px;
     }
 
-    &.router-link-exact-active {
+    &.router-link-active {
       z-index: 2;
       background-color: #42b983;
       border-color: #42b983;

@@ -26,9 +26,8 @@
 
 
 <script lang="ts">
-import Vue from 'vue';
 import { getISO, getRepoKey } from '@/modules/helpers';
-import { Component, Prop } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import { IRootCommit } from '@/store/modules/commits';
 import CardBody, { ICardBodyRow } from '@/components/CardBody.vue';
 import * as moment from 'moment';

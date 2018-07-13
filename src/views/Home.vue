@@ -57,7 +57,7 @@ export default class Home extends Vue {
   }
 
   get watchableRepoD33ts() {
-    return this.repo, this.username, this.date, Date.now();
+    return [this.repo, this.username, this.date].join();
   }
 
   get repo() {

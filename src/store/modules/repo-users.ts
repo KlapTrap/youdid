@@ -18,8 +18,12 @@ export const getRepoFromOwnerName = (owner: string, name: string) =>
 
 class RepoUsersModule implements Module<IRepoUsers, AppState> {
   public actions: ActionTree<IRepoUsers, AppState> = {
-    [FETCH_REPO_USERS]: ({ commit, rootState }) => {
-      const [owner, name] = rootState.repoDetails.name.split('/');
+    [FETCH_REPO_USERS]: ({ commit, rootState }, repoName) => {
+      const repoNameString = repoName || rootState.repoDetails.name;
+      if (!repoNameString) {
+        return;
+      }
+      const [owner, name] = repoNameString.split('/');
       if (owner && name) {
         gitHubGraphQLClient
           .execute({
