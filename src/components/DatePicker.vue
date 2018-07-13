@@ -27,15 +27,15 @@ export default class DatePicker extends Vue {
         text: 'Yesterday',
         onClick: (picker: ElDatePicker) => {
           picker.$emit('pick', this.yesterday);
-        }
+        },
       },
       {
         text: '2 weeks ago',
         onClick: (picker: ElDatePicker) => {
           picker.$emit('pick', this.twoWeekesAgo);
-        }
-      }
-    ]
+        },
+      },
+    ],
   };
 
   private yesterday = moment()
@@ -46,7 +46,7 @@ export default class DatePicker extends Vue {
     .subtract(14, 'days')
     .toDate();
 
-  private date: Date = this.twoWeekesAgo;
+  private date: Date = this.$store.getters.getDate || this.yesterday;
 
   public mounted() {
     this.$emit(dateChange, this.date);

@@ -21,7 +21,7 @@ export default class PullRequests extends Vue {
     return this.$store.state.repoDetails.username;
   }
   get pullRequests() {
-    return this.$store.getters.getRepoPullRequests(this.repo, this.username);
+    return this.$store.getters.getRepoPullRequests;
   }
 }
 </script>
