@@ -19,7 +19,7 @@ const router = new Router({
     },
     {
       path: '/*',
-      redirect: 'home',
+      redirect: '/prs',
     },
   ],
 });
@@ -29,6 +29,9 @@ function hasQueryParams(route: Route) {
 }
 
 router.beforeEach((to, from, next) => {
+  if (!from) {
+    next();
+  }
   if (!hasQueryParams(to) && hasQueryParams(from)) {
     next({ name: to.name, query: from.query });
   } else {
