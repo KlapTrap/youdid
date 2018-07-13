@@ -1,6 +1,8 @@
 # youdid
 Time based views for Github project activity.
 
+![alt text](https://github.com/klaptrap/youdid/raw/master/docs/screenshot.png "Logo Title Text 1")
+
 youdid allows you to view prs and commits for a given github project, user, branch and time period.
 
 ## Setup
