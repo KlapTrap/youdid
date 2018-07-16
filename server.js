@@ -11,15 +11,10 @@ var proxy = require('http-proxy-middleware');
 
 // proxy middleware options
 var options = {
-  changeOrigin: true, // needed for virtual hosted sites
-  onProxyReq: (proxyReq, req, res) => {
-    console.log(req.get('host'), req.url)
-    // proxyReq.setHeader('Authorization', `bearer ${process.env.GITHUB_APP_TOKEN}`); // add new header to response
-  },
+  changeOrigin: true,
   headers: {
     'Authorization': `bearer ${process.env.GITHUB_APP_TOKEN}`
-  },
-  logLevel: 'debug'
+  }
 };
 
 // create the proxy (without context)
