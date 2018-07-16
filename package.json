@@ -10,7 +10,7 @@
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-    "start": "npm run build-start-server"
+    "start": "npm run start-server"
   },
   "dependencies": {
     "apollo-link": "^1.2.2",
