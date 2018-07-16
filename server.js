@@ -34,7 +34,7 @@ var graphQlProxy = proxy({
   ...options,
   target: `https://api.github.com/graphql`,
   pathRewrite: {
-    '^/github-graphql': '/'
+    '^/github-graphql': ''
   }
 });
 
